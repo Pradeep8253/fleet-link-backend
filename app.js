@@ -1,26 +1,31 @@
-// Import express
 import express from "express";
-// Create express app
+import dotenv from "dotenv";
+import cors from "cors";
+import connectDB from "./config/connectDB.js";
+import vehiclesRouter from "./routes/vehiclesRoutes.js";
+import bookingsRouter from "./routes/bookingsRoutes.js";
+import authUserRoutes from "./routes/authUsersRoutes.js";
+import cookieParser from "cookie-parser";
+
+dotenv.config();
+
 const app = express();
-
-// Define port
-const PORT = 5000;
-
-// Middleware to parse JSON
 app.use(express.json());
+app.use(cookieParser());
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL,
+    credentials: true,
+  })
+);
+app.use(express.urlencoded({ extended: true }));
+connectDB();
 
-// Simple route
-app.get("/", (req, res) => {
-  res.send("Hello, Backend is working!");
-});
+app.use("/api/auth", authUserRoutes);
+app.use("/api/vehicles", vehiclesRouter);
+app.use("/api/bookings", bookingsRouter);
 
-// Example POST route
-app.post("/data", (req, res) => {
-  const { name } = req.body;
-  res.send(`Received data for: ${name}`);
-});
-
-// Start server
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
