@@ -12,12 +12,18 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
+
 app.use(
   cors({
-    origin: process.env.CLIENT_URL,
+    origin: (origin, cb) => cb(null, true),
     credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+
+app.options("*", cors());
+
 app.use(express.urlencoded({ extended: true }));
 connectDB();
 
@@ -26,6 +32,4 @@ app.use("/api/vehicles", vehiclesRouter);
 app.use("/api/bookings", bookingsRouter);
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
