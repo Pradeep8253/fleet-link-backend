@@ -1,11 +1,11 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import connectDB from "./config/connectDB.js";
 import vehiclesRouter from "./routes/vehiclesRoutes.js";
 import bookingsRouter from "./routes/bookingsRoutes.js";
 import authUserRoutes from "./routes/authUsersRoutes.js";
-import cookieParser from "cookie-parser";
 
 dotenv.config();
 
@@ -22,7 +22,7 @@ app.use(
   })
 );
 
-app.options("*", cors());
+app.options("(.*)", cors());
 
 app.use(express.urlencoded({ extended: true }));
 connectDB();
